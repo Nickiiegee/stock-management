@@ -1,12 +1,12 @@
-'use server';
+"use server";
 import WarehouseDetails from "@/components/warehouse";
 
-export default async function CountryPage({
-  params,
-}: {
-  params: { country: string };
-}) {
-  const { country } = await params;
+interface PageProps {
+  params: Promise<{ country: string }>;
+}
+
+export default async function CountryPage(props: PageProps) {
+  const { country } = await props.params;
 
   return (
     <div className="w-full h-full">
