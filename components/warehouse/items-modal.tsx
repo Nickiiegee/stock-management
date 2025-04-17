@@ -1,18 +1,9 @@
 "use client";
 
 import { useUpdateItems } from "@/utils/useItems";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useState } from "react";
 import { useAlert } from "../snackbar";
+import { Button } from "../ui/button";
 
 interface BulkUpdateModalProps {
   location: string;
@@ -64,39 +55,54 @@ export default function BulkUpdateModal({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Bulk Update Stock</DialogTitle>
-      <DialogContent dividers>
-        <Box display="flex" flexDirection="column" gap={2}>
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center ${
+        open ? "block" : "hidden"
+      }`}
+    >
+      <div className="light:bg-white dark:bg-slate-900  rounded-lg shadow-lg w-full max-w-md">
+        <div className="border-b px-4 py-2">
+          <h2 className="text-lg font-semibold">Bulk Update Stock</h2>
+        </div>
+        <div className="p-4 space-y-4 overflow-y-auto max-h-96">
           {items.map((item) => (
-            <Box
+            <div
               key={item.id}
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
+              className="flex items-center justify-between space-x-4"
             >
-              <Typography variant="body1">{item.name}</Typography>
-              <TextField
+              <span className="text-sm font-medium">{item.name}</span>
+              <input
                 type="number"
-                size="small"
-                sx={{ width: "100px" }}
-                value={quantityChanges[item.quantity]}
+                className="w-24 px-2 py-1 border rounded"
+                // @ts-ignore
+                value={quantityChanges ? quantityChanges[item.quantity]: 0}
                 onChange={(e) =>
                   handleQuantityChange(item.id, parseInt(e.target.value))
                 }
               />
-            </Box>
+            </div>
           ))}
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} disabled={isPending}>
+        </div>
+        <div className="flex justify-end space-x-2 border-t px-4 py-2">
+
+        <Button
+          onClick={handleClose}
+          variant={"outline"}
+          disabled={isPending}
+          className="px-4 py-2"
+        >
           Cancel
         </Button>
-        <Button onClick={handleUpdate} disabled={isPending} variant="contained">
+        <Button
+          onClick={handleUpdate}
+          variant={"default"}
+          disabled={isPending}
+          className="px-4 py-2"
+        >
           {isPending ? "Updating..." : "Update"}
         </Button>
-      </DialogActions>
-    </Dialog>
+        </div>
+      </div>
+    </div>
   );
 }

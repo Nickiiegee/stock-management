@@ -1,18 +1,6 @@
-import React, { useState } from "react";
-import { FiTrash } from "react-icons/fi";
-import {
-  AlertColor,
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useAddItems } from "@/utils/useItems";
+import { useState } from "react";
+import { FiTrash } from "react-icons/fi";
 import { useAlert } from "../snackbar";
 import { Button } from "../ui/button";
 
@@ -52,18 +40,30 @@ export default function AddItemsModal({
       },
     });
   };
-
+  // Replaced MUI components with TailwindCSS styling
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>Add New Items</DialogTitle>
-        <DialogContent dividers>
-          <Button variant={"default"} onClick={handleAddItemToList}>Add Item</Button>
+    <div
+      className={`fixed inset-0 bg-opacity-40 flex items-center justify-center z-50 ${open ? "block" : "hidden"}`}
+    >
+      <div className="light:bg-white dark:bg-slate-900 rounded-lg shadow-lg w-full max-w-md">
+        <div className="border-b px-4 py-2">
+          <h2 className="text-lg font-semibold">Add New Items</h2>
+        </div>
+        <div className="p-4 space-y-4">
+          <Button
+            className="px-4 py-2 rounded-md"
+            onClick={handleAddItemToList}
+          >
+            Add Item
+          </Button>
           <div className="flex flex-col gap-4 divide-y divide-gray-300">
             {items.map((item, idx) => (
-              <div className="flex flex-col md:flex-row md:items-center md:gap-4" key={idx}>
+              <div
+                className="flex flex-col md:flex-row md:items-center md:gap-4"
+                key={idx}
+              >
                 <div className="flex-1 mb-2 md:mb-0">
-                  <label className="block text-sm font-medium text-gray-700 mb-1 mt-2">
+                  <label className="block text-sm font-medium mb-1 mt-2">
                     Name
                   </label>
                   <input
@@ -85,7 +85,7 @@ export default function AddItemsModal({
                   />
                 </div>
                 <div className="flex-1 mb-2 md:mb-0">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium mb-1 mt-2">
                     Quantity
                   </label>
                   <input
@@ -124,20 +124,25 @@ export default function AddItemsModal({
               </div>
             ))}
           </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}
-            variant={"outline"} disabled={isPending}>
+        </div>
+        <div className="border-t px-4 py-2 flex justify-end space-x-2">
+          <Button
+            className="px-4 py-2 rounded-md"
+            variant={"outline"}
+            onClick={handleClose}
+            disabled={isPending}
+          >
             Cancel
           </Button>
           <Button
+            className="px-4 py-2 rounded-md"
             onClick={handleAddItems}
             disabled={isPending}
           >
             {isPending ? "Adding..." : "Add"}
           </Button>
-        </DialogActions>
-      </Dialog>
+        </div>
+      </div>
     </div>
   );
 }

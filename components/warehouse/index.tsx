@@ -55,7 +55,7 @@ export default function WarehouseDetails({ location }: { location: string }) {
         <h1 className="text-3xl font-bold mb-4">
           {location.charAt(0).toUpperCase() + location.slice(1)} Stock
         </h1>
-        <div className="flex justify-end ml-auto">
+        <div className="flex justify-end ml-auto space-x-2">
           <Button
             type="submit"
             variant={"outline"}
