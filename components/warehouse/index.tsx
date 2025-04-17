@@ -1,15 +1,14 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { Button } from "../ui/button";
-import ItemsTable from "./items-table";
-import { useEffect, useState } from "react";
-import BulkUpdateModal from "./items-modal";
-import { useItems } from "@/utils/useItems";
-import { IoMdAdd } from "react-icons/io";
-import { GrUpdate } from "react-icons/gr";
 import { getUserRole } from "@/app/actions";
+import { useItems } from "@/utils/useItems";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { GrUpdate } from "react-icons/gr";
+import { IoMdAdd, IoMdArrowRoundBack } from "react-icons/io";
+import { Button } from "../ui/button";
 import AddItemsModal from "./items-add-modal";
+import BulkUpdateModal from "./items-modal";
+import ItemsTable from "./items-table";
 
 export default function WarehouseDetails({ location }: { location: string }) {
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -52,8 +51,13 @@ export default function WarehouseDetails({ location }: { location: string }) {
         <Button variant="link" className="mb-4" onClick={() => route.back()}>
           <IoMdArrowRoundBack />
         </Button>
-        <h1 className="text-3xl font-bold mb-4">
-          {location.charAt(0).toUpperCase() + location.slice(1)} Stock
+        <h1
+          className="text-3xl font-bold mb-4"
+          style={{ textTransform: "capitalize" }}
+        >
+          {location.charAt(0).toUpperCase() +
+            location.slice(1).replace("_", " ")}{" "}
+          Stock
         </h1>
         <div className="flex justify-end ml-auto space-x-2">
           <Button
