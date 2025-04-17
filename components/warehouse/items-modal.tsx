@@ -56,14 +56,12 @@ export default function BulkUpdateModal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
+      className={`fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50 ${
         open ? "block" : "hidden"
       }`}
     >
-      <div className="light:bg-white dark:bg-slate-900  rounded-lg shadow-lg w-full max-w-md">
-        <div className="border-b px-4 py-2">
+      <div className="bg-white dark:bg-black rounded-lg shadow-lg p-6 w-96">
           <h2 className="text-lg font-semibold">Bulk Update Stock</h2>
-        </div>
         <div className="p-4 space-y-4 overflow-y-auto max-h-96">
           {items.map((item) => (
             <div

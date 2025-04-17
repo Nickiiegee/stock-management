@@ -43,9 +43,9 @@ export default function AddItemsModal({
   // Replaced MUI components with TailwindCSS styling
   return (
     <div
-      className={`fixed inset-0 bg-opacity-40 flex items-center justify-center z-50 ${open ? "block" : "hidden"}`}
+      className={`fixed inset-0 ight:bg-white dark:bg-slate-900 flex items-center justify-center z-50 ${open ? "block" : "hidden"}`}
     >
-      <div className="light:bg-white dark:bg-slate-900 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-white dark:bg-black rounded-lg shadow-lg w-full max-w-md">
         <div className="border-b px-4 py-2">
           <h2 className="text-lg font-semibold">Add New Items</h2>
         </div>

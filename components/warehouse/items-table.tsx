@@ -62,8 +62,8 @@ export default function ItemsTable({ data, location }: { data: []; location: str
             </div> */}
           </>
         ) : (
-          <div className="justify-center text-center p-8">
-            <p>No data found</p>
+          <div className="justify-center text-center p-8 dark:text-black">
+            <h4>No data found</h4>
           </div>
         )}
       </div>
