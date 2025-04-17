@@ -7,28 +7,28 @@ type Item = {
   id: number;
   name: string;
   quantity: number;
-  country: string;
+  location: string;
 };
 
-const fetchItems = async (country: string): Promise<Item[]> => {
+const fetchItems = async (location: string): Promise<Item[]> => {
   const { data, error } = await supabase
     .from("items")
     .select("*")
-    .eq("country", country)
+    .eq("location", location)
     .order("name", { ascending: true });
-
+  if (!data) return []
   if (error) throw error;
   return data;
 };
 
-export const useItems = (country: string) => {
+export const useItems = (location: string) => {
   return useQuery({
-    queryKey: ["items", country],
-    queryFn: () => fetchItems(country),
+    queryKey: ["items", location],
+    queryFn: () => fetchItems(location),
   });
 };
 
-export const useUpdateItems = (country: string) => {
+export const useUpdateItems = (location: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -54,7 +54,7 @@ export const useUpdateItems = (country: string) => {
           updates.find((u) => u.id === item.id).quantity || 0;
         return {
           id: item.id,
-          quantity: item.quantity + change,
+          quantity: item.quantity - change,
         };
       });
 
@@ -71,7 +71,52 @@ export const useUpdateItems = (country: string) => {
       return updatedItems;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["items", country] });
+      queryClient.invalidateQueries({ queryKey: ["items", location] });
+    },
+  });
+};
+
+export const useAddItems = (location: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (updates: any[]) => {
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      // Step 3: Perform bulk update
+      for (const item of updates) {
+        const { error } = await supabase
+          .from("items")
+          .insert({ ...item, last_updated_by: user?.email, location: location })
+
+        if (error) throw error;
+      }
+
+      return updates;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["items", location] });
+    },
+  });
+};
+
+export const useDeleteItem = (location: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('items')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['items', location] });
     },
   });
 };

@@ -5,10 +5,8 @@ import React from 'react';
 
 const AdminDashboard: React.FC = () => {
     const tiles = [
-        { id: 1, title: 'Yunlin', page: 'yunlin' },
-        { id: 2, title: 'Tile 2' },
-        { id: 3, title: 'Tile 3' },
-        { id: 4, title: 'Tile 4' },
+        { id: 1, title: 'Taichung', page: 'taichung' },
+        { id: 2, title: 'Yunlin', page: 'yunlin' },
     ];
 
     return (
