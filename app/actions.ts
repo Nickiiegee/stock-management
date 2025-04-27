@@ -17,7 +17,7 @@ export const signInAction = async (formData: FormData) => {
 
   if (data.user && !error) {
     const { error: updateError } = await supabase
-      .from("user_roles")
+      .from("user_profiles")
       .update({ last_active: new Date().toISOString() })
       .eq("id", data.user.id);
     if (updateError) {

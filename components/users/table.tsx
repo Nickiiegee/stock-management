@@ -55,7 +55,7 @@ export default function UsersTable({ users, role }: { users: UserProfile[], role
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
               {/* <TableHead>Status</TableHead> */}
-              <TableHead>Last Active</TableHead>
+              <TableHead>Last Sign In</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>

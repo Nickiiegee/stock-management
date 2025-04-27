@@ -4,7 +4,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   Select,
   MenuItem,
   FormControl,
@@ -12,6 +11,7 @@ import {
 } from '@mui/material';
 import { useMoveStock } from '@/utils/useContainerSections';
 import { useAlert } from '../snackbar';
+import { Button } from '../ui/button';
 
 interface MoveStockProps {
     open: any;
@@ -68,8 +68,8 @@ export function MoveStockDialog({ open, onClose, stockItem, sections }:MoveStock
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleMove} disabled={!targetSectionId} variant="contained">
+        <Button variant='outline' onClick={onClose}>Cancel</Button>
+        <Button onClick={handleMove} disabled={!targetSectionId}>
           Move
         </Button>
       </DialogActions>
