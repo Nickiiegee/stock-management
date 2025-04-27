@@ -1,18 +1,11 @@
-'use client';
-import AdminDashboard from "@/components/dashboard";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React, { useState } from "react";
+import UsersPage from "@/components/users";
 
-export default function Users () {
-  const [queryClient] = useState(() => new QueryClient());
+export default function Users() {
   return (
-    <QueryClientProvider client={queryClient}>
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
-        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-        <AdminDashboard />
+        <UsersPage />
       </div>
     </div>
-    </QueryClientProvider>
   );
 }

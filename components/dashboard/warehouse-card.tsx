@@ -1,26 +1,31 @@
-
-import { ArrowRight, Box } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ArrowRight, Box } from "lucide-react";
+import Link from "next/link";
 
 export interface WarehouseCardProps {
-  id: string
-  name: string
-  location: string
-  itemCount: number
-  capacityUsed: number
-  lowStockCount: number
+  id: string;
+  name: string;
+  container: string;
+  // location: string
+  // itemCount: number
+  // capacityUsed: number
+  // lowStockCount: number
 }
 
 export const WarehouseCard = ({
   id,
   name,
-  location,
-  itemCount,
-  capacityUsed,
-  lowStockCount
+  container,
+  // itemCount,
+  // capacityUsed,
+  // lowStockCount
 }: WarehouseCardProps) => {
   return (
     <Card className="overflow-hidden">
@@ -29,10 +34,10 @@ export const WarehouseCard = ({
           <CardTitle className="text-xl">{name}</CardTitle>
           <Box className="h-5 w-5 text-muted-foreground" />
         </div>
-        <CardDescription>{location}</CardDescription>
+        <CardDescription>{container}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        {/* <div className="grid gap-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Capacity Used</span>
             <span className="text-sm font-medium">{capacityUsed}%</span>
@@ -57,11 +62,11 @@ export const WarehouseCard = ({
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
       </CardContent>
       <CardFooter className="border-t bg-muted/50 p-2">
         <Link
-          href={`/warehouses/${id}`}
+          href={container === "warehouse" ? "/warehouse" : `dashboard/${id}`}
           className="flex w-full items-center justify-center gap-1 rounded-sm px-3 py-2 text-sm font-medium text-primary hover:underline"
         >
           View Inventory
@@ -69,5 +74,5 @@ export const WarehouseCard = ({
         </Link>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};

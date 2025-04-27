@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { BarChart2, Box, Home, Layers, Settings, Ship, Wrench, Users } from "lucide-react"
+import { BarChart2, Box, Home, Layers, Settings, Ship, Wrench, Users, ShipWheel, WavesIcon, File } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -41,12 +41,14 @@ export const DashboardSidebar = () => {
 
   const menuItems = [
     { title: 'Dashboard', icon: Home, path: '/' },
-    { title: 'Warehouses', icon: Box, path: '/warehouses' },
-    { title: 'Vessels', icon: Ship, path: '/vessels' },
-    { title: 'Dive Equipment', icon: Wrench, path: '/dive-equipment' },
-    { title: 'Reports', icon: BarChart2, path: '/reports' },
+    { title: 'Warehouse', icon: Box, path: '/warehouse' },
+    { title: 'Vessels', icon: ShipWheel, path: '/vessel' },
+    { title: 'Diving', icon: WavesIcon, path: '/diving' },
+    { title: 'Trencher', icon: Ship, path: '/trencher' },
+    { title: 'Surveys', icon: File, path: '/surveys' },
+    { title: 'Welding', icon: Wrench, path: '/welding' },
     { title: 'Users', icon: Users, path: '/users' },
-    { title: 'Settings', icon: Settings, path: '/settings' },
+    // { title: 'Settings', icon: Settings, path: '/settings' },
   ]
 
   return (
