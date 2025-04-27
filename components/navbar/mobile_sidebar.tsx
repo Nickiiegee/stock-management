@@ -4,12 +4,10 @@ import { signOutAction } from "@/app/actions";
 import { cn } from "@/lib/utils";
 import seatrenchLogo from "@/utils/assets/logo.jpeg";
 import {
-  BarChart2,
   Box,
   File,
   Home,
   Layers,
-  Settings,
   Ship,
   ShipWheel,
   Users,
@@ -19,7 +17,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
 interface SidebarItemProps {
@@ -28,6 +26,7 @@ interface SidebarItemProps {
   path: string;
   isActive: boolean;
   isCollapsed: boolean;
+  closeNav: any;
 }
 
 const SidebarItem = ({
@@ -36,6 +35,7 @@ const SidebarItem = ({
   path,
   isActive,
   isCollapsed,
+  closeNav,
 }: SidebarItemProps) => {
   return (
     <Link href={path} className="w-full">
@@ -46,6 +46,7 @@ const SidebarItem = ({
             ? "bg-sidebar-accent text-sidebar-accent-foreground"
             : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
         )}
+        onClick={closeNav}
       >
         <Icon size={20} />
         {isCollapsed && <span>{title}</span>}
@@ -59,15 +60,20 @@ export const MobileSidebar = () => {
   const location = usePathname();
 
   const menuItems = [
-    { title: 'Dashboard', icon: Home, path: '/' },
-    { title: 'Warehouse', icon: Box, path: '/warehouse' },
-    { title: 'Vessels', icon: ShipWheel, path: '/vessel' },
-    { title: 'Diving', icon: WavesIcon, path: '/diving' },
-    { title: 'Trencher', icon: Ship, path: '/trencher' },
-    { title: 'Surveying', icon: File, path: '/surveys' },
-    { title: 'Welding', icon: Wrench, path: '/welding' },
-    { title: 'Users', icon: Users, path: '/users' },
+    { title: "Dashboard", icon: Home, path: "/" },
+    { title: "Warehouse", icon: Box, path: "/warehouse" },
+    { title: "Vessels", icon: ShipWheel, path: "/vessel" },
+    { title: "Diving", icon: WavesIcon, path: "/diving" },
+    { title: "Trencher", icon: Ship, path: "/trencher" },
+    { title: "Surveying", icon: File, path: "/surveys" },
+    { title: "Welding", icon: Wrench, path: "/welding" },
+    { title: "Users", icon: Users, path: "/users" },
   ];
+
+  useEffect(() => {
+    // Close sidebar automatically when route changes
+    setIsCollapsed(false);
+  }, [location]);
 
   return (
     <>
@@ -103,6 +109,7 @@ export const MobileSidebar = () => {
                 path={item.path}
                 isActive={location === item.path}
                 isCollapsed={isCollapsed}
+                closeNav={() => setIsCollapsed(!isCollapsed)}
               />
             ))}
             <form action={signOutAction}>
