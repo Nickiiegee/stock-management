@@ -6,11 +6,14 @@ import seatrenchLogo from "@/utils/assets/logo.jpeg";
 import {
   BarChart2,
   Box,
+  File,
   Home,
   Layers,
   Settings,
   Ship,
+  ShipWheel,
   Users,
+  WavesIcon,
   Wrench,
 } from "lucide-react";
 import Image from "next/image";
@@ -56,13 +59,14 @@ export const MobileSidebar = () => {
   const location = usePathname();
 
   const menuItems = [
-    { title: "Dashboard", icon: Home, path: "/" },
-    { title: "Warehouses", icon: Box, path: "/warehouses" },
-    { title: "Vessels", icon: Ship, path: "/vessels" },
-    { title: "Dive Equipment", icon: Wrench, path: "/dive-equipment" },
-    { title: "Reports", icon: BarChart2, path: "/reports" },
-    { title: "Users", icon: Users, path: "/users" },
-    { title: "Settings", icon: Settings, path: "/settings" },
+    { title: 'Dashboard', icon: Home, path: '/' },
+    { title: 'Warehouse', icon: Box, path: '/warehouse' },
+    { title: 'Vessels', icon: ShipWheel, path: '/vessel' },
+    { title: 'Diving', icon: WavesIcon, path: '/diving' },
+    { title: 'Trencher', icon: Ship, path: '/trencher' },
+    { title: 'Surveys', icon: File, path: '/surveys' },
+    { title: 'Welding', icon: Wrench, path: '/welding' },
+    { title: 'Users', icon: Users, path: '/users' },
   ];
 
   return (
