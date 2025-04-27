@@ -1,10 +1,6 @@
-'use client';
+"use client";
 
-import Hero from "@/components/hero";
-import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
-import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -19,9 +15,9 @@ export default function Home() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        router.replace('/dashboard');
+        router.replace("/dashboard");
       } else {
-        router.replace('/sign-in');
+        router.replace("/sign-in");
       }
     });
   }, []);

@@ -1,27 +1,44 @@
 "use client";
-import Link from "next/link";
 import React from "react";
+import { ContainerCard } from "../shared/dashboard-card";
+import AddSection from "./add-container";
+import { useFetchContainers } from "@/utils/useContainerSections";
+import AddContainer from "./add-container";
 
 const AdminDashboard: React.FC = () => {
-  const tiles = [
-    { id: 1, title: "Warehouse", page: "warehouse" },
-    { id: 2, title: "Yunlin", page: "yunlin" },
-    { id: 3, title: "Hai Long", page: "hai_long" },
-  ];
+  const { data, isLoading } = useFetchContainers();
+
+  if (isLoading) return <p>Loading...</p>
 
   return (
-    <div className="grid grid-cols-1 gap-4 p-4 w-full sm:grid-cols-2 lg:grid-cols-3">
-      {tiles.map((tile) => (
-        <div
-          typeof="card"
-          key={tile.id}
-          className="p-4 rounded-lg shadow-md border border-gray-200 justify-center text-center"
-        >
-          <Link href={`/dashboard/${tile.page}`}>
-            <h3 className="text-lg font-semibold mb-2">{tile.title}</h3>
-          </Link>
+    <div className="flex-1 w-full flex flex-col gap-12">
+      <div className="w-full">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <div className="flex items-center">
+            <AddContainer containerType="container" />
+          </div>
         </div>
-      ))}
+        <div className="grid grid-cols-1 gap-4 p-4 w-full sm:grid-cols-2 lg:grid-cols-3">
+          {data
+            ?.filter((item) => {
+              if (
+                item.container === "warehouse" ||
+                item.container === "container"
+              )
+                return item;
+            })
+            .map((tile) => (
+              <div typeof="card" key={tile.id}>
+                <ContainerCard
+                  id={tile.id}
+                  name={tile.name}
+                  container={tile.container}
+                />
+              </div>
+            ))}
+        </div>
+      </div>
     </div>
   );
 };

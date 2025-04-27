@@ -1,16 +1,11 @@
 "use server";
-import WarehouseDetails from "@/components/warehouse";
+import Container from "@/components/container";
 
-interface PageProps {
-  params: Promise<{ location: string }>;
-}
 
-export default async function locationPage(props: PageProps) {
-  const { location } = await props.params;
-
+export default async function ContainerPage() {
   return (
     <div className="w-full h-full">
-      <WarehouseDetails location={location} />
+      <Container />
     </div>
   );
 }

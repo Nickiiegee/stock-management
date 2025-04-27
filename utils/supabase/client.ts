@@ -1,5 +1,4 @@
 import { createBrowserClient } from "@supabase/ssr";
-import { useEffect, useState } from "react";
 
 export const createClient = () =>
   createBrowserClient(
