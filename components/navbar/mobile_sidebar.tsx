@@ -64,7 +64,7 @@ export const MobileSidebar = () => {
     { title: 'Vessels', icon: ShipWheel, path: '/vessel' },
     { title: 'Diving', icon: WavesIcon, path: '/diving' },
     { title: 'Trencher', icon: Ship, path: '/trencher' },
-    { title: 'Surveys', icon: File, path: '/surveys' },
+    { title: 'Surveying', icon: File, path: '/surveys' },
     { title: 'Welding', icon: Wrench, path: '/welding' },
     { title: 'Users', icon: Users, path: '/users' },
   ];

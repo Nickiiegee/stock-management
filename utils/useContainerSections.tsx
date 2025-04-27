@@ -40,14 +40,12 @@ export function useContainerSections(containerId: string) {
 export const useAddContainer = (containerType: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (section: string) => {
+    mutationFn: async (container: string) => {
       const { error } = await supabase
         .from("containers")
-        .insert({ name: section, container: containerType });
+        .insert({ name: container, container: containerType });
 
       if (error) throw error;
-
-      return section;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
