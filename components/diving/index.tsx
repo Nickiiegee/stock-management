@@ -30,6 +30,7 @@ const DivingDashboard: React.FC = () => {
                   id={tile.id}
                   name={tile.name}
                   container={tile.container}
+                  description={tile.description}
                 />
               </div>
             ))}
