@@ -75,6 +75,23 @@ export const useAddSection = (containerId: string) => {
   });
 };
 
+export const useRemoveSection = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (sectionId: string) => {
+      const { error } = await supabase
+        .from("sections")
+        .delete()
+        .eq("id", sectionId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["containerSections"] });
+    },
+  });
+}
+
 export const useAddStockItems = () => {
   const queryClient = useQueryClient();
 
@@ -151,6 +168,40 @@ export const useMoveStock = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["containerSections"] });
+    },
+  });
+};
+
+export const useUpdateContainerDescription = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, description }: { id: string; description: string }) => {
+      const { error } = await supabase
+        .from("containers")
+        .update({ description })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["containers"] });
+    },
+  });
+}
+
+export const useDeleteContainer = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("containers")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["containers"] });
     },
   });
 };

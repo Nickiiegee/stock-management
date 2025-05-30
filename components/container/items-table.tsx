@@ -24,6 +24,7 @@ import { MdOutlineDriveFileMove } from "react-icons/md";
 import { useAlert } from "../snackbar";
 import { MoveStockDialog } from "./move-stock-dialog";
 import RemoveStockItem from "./remove-item";
+import { Textarea } from "../ui/textarea";
 
 interface StockItem {
   id: string;
@@ -70,18 +71,6 @@ export default function StockTable({
     setEditItemData(item);
   };
 
-  const handleDeleteStock = (item: StockItem) => {
-    deleteStockItem(item.id, {
-      onSuccess: () => {
-        showAlert("Removed stock successfully.", "success");
-      },
-      onError: (err: any) => {
-        console.error(err);
-        showAlert("Failed to remove stock. Please try again.", "error");
-      },
-    });
-  };
-
   const handleSaveEdit = () => {
     if (editItemId && editItemData) {
       updateStockItem(
@@ -103,7 +92,7 @@ export default function StockTable({
 
   return (
     <div className="overflow-auto">
-      <div className="bg-white shadow-md rounded-lg relative overflow-x-auto">
+      <div className="shadow-md rounded-lg relative overflow-x-auto">
         {data.stock_items.length > 0 ? (
           <>
             <Table>
@@ -143,7 +132,7 @@ export default function StockTable({
                     </TableCell>
                     <TableCell className="font-medium">
                       {editItemId === item.id ? (
-                        <Input
+                        <Textarea
                           value={editItemData.item_name || ""}
                           onChange={(e) =>
                             handleChange("item_name", e.target.value)
@@ -155,7 +144,7 @@ export default function StockTable({
                     </TableCell>
                     <TableCell className="font-medium">
                       {editItemId === item.id ? (
-                        <Input
+                        <Textarea
                           value={editItemData.description || ""}
                           onChange={(e) =>
                             handleChange("description", e.target.value)
@@ -191,7 +180,7 @@ export default function StockTable({
                     </TableCell>
                     <TableCell>
                       {editItemId === item.id ? (
-                        <Input
+                        <Textarea
                           value={editItemData.notes || ""}
                           onChange={(e) =>
                             handleChange("notes", e.target.value)
@@ -277,13 +266,6 @@ export default function StockTable({
                             <MdOutlineDriveFileMove className="h-4 w-4" />
                           </Button>
                           <RemoveStockItem item={item} />
-                          {/* <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDeleteStock(item)}
-                          >
-                            <FiTrash className="h-4 w-4" />
-                          </Button> */}
                         </>
                       )}
                     </TableCell>

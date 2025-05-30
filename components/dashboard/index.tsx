@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { ContainerCard } from "../shared/dashboard-card";
-import AddSection from "./add-container";
 import { useFetchContainers } from "@/utils/useContainerSections";
 import AddContainer from "./add-container";
 
@@ -34,6 +33,7 @@ const AdminDashboard: React.FC = () => {
                   id={tile.id}
                   name={tile.name}
                   container={tile.container}
+                  description={tile.description}
                 />
               </div>
             ))}

@@ -20,7 +20,7 @@ const AddSectionPopup: React.FC<{
         </h2>
         <input
           type="text"
-          placeholder="New stock name"
+          placeholder="New section name"
           value={stockName}
           onChange={(e) => setStockName(e.target.value)}
           disabled={isPending}

@@ -32,7 +32,8 @@ const ModalContent = ({ sectionId, open, onClose }: BulkUpdateModalProps) => {
       },
       onError: (err) => {
         console.error(err);
-        showAlert("Failed to add new stock. Please try again.", "error");
+        // showAlert("Failed to add new stock. Please try again.", "error");
+        showAlert(`${err?.message}`, "error");
       },
     });
   };

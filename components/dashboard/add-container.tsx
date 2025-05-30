@@ -46,15 +46,14 @@ const AddContainer = ({ containerType }: { containerType: string }) => {
   const showAlert = useAlert();
 
   const handleAddContainer = () => {
-    console.log("Item deleted");
     addContainer(container, {
       onSuccess: () => {
-        showAlert("Added new section successfully.", "success");
+        showAlert("Added new container successfully.", "success");
         handleCancel();
       },
       onError: (err: any) => {
         console.error(err);
-        showAlert("Failed to add new section. Please try again.", "error");
+        showAlert("Failed to add new container. Please try again.", "error");
       },
     });
     setContainer("");
