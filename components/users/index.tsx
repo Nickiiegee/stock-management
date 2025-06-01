@@ -1,7 +1,6 @@
 "use client";
-import { getUserRole } from "@/app/actions";
+import { useFetchUserRole } from "@/utils/useFetchUserRole";
 import { useUpdateUserProfile, useUserProfiles } from "@/utils/useUserProfiles";
-import { useEffect, useState } from "react";
 import AddUserModal from "./addUser";
 import UsersTable from "./table";
 import UserTotals from "./userTotals";
@@ -9,17 +8,7 @@ import UserTotals from "./userTotals";
 const UsersPage = () => {
   const { data: users = [], isLoading } = useUserProfiles();
   const updateUserProfile = useUpdateUserProfile();
-  const [role, setRole] = useState("");
-
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      const role = await getUserRole();
-      if (role === "admin") {
-        setRole("admin");
-      }
-    };
-    fetchUserRole();
-  }, []);
+  const { data: role } = useFetchUserRole();
 
   if (isLoading) {
     return <div>Loading users...</div>;

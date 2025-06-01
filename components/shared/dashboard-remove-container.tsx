@@ -12,11 +12,11 @@ const RemoveContainerPopup: React.FC<RemoveContainerDialogProps> = ({
 }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-white dark:bg-black rounded-lg shadow-lg p-6 w-96">
+        <h2 className="text-lg font-semibold mb-4">
           Remove Container
         </h2>
-        <div>
+        <div className="mb-4">
           You are about to delete this container completely. Are you sure about
           this action? This action is irreversible.
         </div>

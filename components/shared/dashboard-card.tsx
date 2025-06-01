@@ -1,4 +1,3 @@
-import { getUserRole } from "@/app/actions";
 import {
   Card,
   CardDescription,
@@ -25,6 +24,7 @@ import { createElement, useEffect, useState } from "react";
 import { useAlert } from "../snackbar";
 import { Button } from "../ui/button";
 import { RemoveContainerDialog } from "./dashboard-remove-container";
+import { useFetchUserRole } from "@/utils/useFetchUserRole";
 
 export interface WarehouseCardProps {
   id: string;
@@ -39,7 +39,8 @@ export const ContainerCard = ({
   container,
   description,
 }: WarehouseCardProps) => {
-  const [role, setRole] = useState("");
+  // const [role, setRole] = useState("");
+  const { data: role } = useFetchUserRole();
   const [isEditing, setIsEditing] = useState(false);
   const [editDescription, setEditDescription] = useState(description || "");
   const [isSaving, setIsSaving] = useState(false);
@@ -67,16 +68,6 @@ export const ContainerCard = ({
         return Box;
     }
   };
-
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      const role = await getUserRole();
-      if (role === "admin") {
-        setRole("admin");
-      }
-    };
-    fetchUserRole();
-  }, []);
 
   const handleContainerDescriptionUpdate = async (
     id: string,
@@ -131,7 +122,7 @@ export const ContainerCard = ({
                 {createElement(getIcon())}
               </Button>
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+                <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-black border rounded shadow-lg z-10">
                   <button
                     className="w-full px-4 py-2 text-left hover:bg-muted"
                     onClick={() => {

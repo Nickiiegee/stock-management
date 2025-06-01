@@ -1,5 +1,5 @@
 import Container from "@/components/container";
 
-export default async function Warehouse() {
+export default function Warehouse() {
   return <Container />;
 }

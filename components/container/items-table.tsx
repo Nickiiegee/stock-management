@@ -3,28 +3,24 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+// import { TableCell } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { useUpdateStockItem } from "@/utils/useContainerSections";
 import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
-  TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import {
-  useDeleteStockItem,
-  useUpdateStockItem,
-} from "@/utils/useContainerSections";
-import { Pencil } from "lucide-react";
+} from "@mui/material";
 import { useState } from "react";
 import { FaSave } from "react-icons/fa";
-import { FiTrash } from "react-icons/fi";
 import { GiCancel } from "react-icons/gi";
-import { MdOutlineDriveFileMove } from "react-icons/md";
 import { useAlert } from "../snackbar";
-import { MoveStockDialog } from "./move-stock-dialog";
-import RemoveStockItem from "./remove-item";
 import { Textarea } from "../ui/textarea";
+import { MoveStockDialog } from "./move-stock-dialog";
+import RowMenu from "./row-menu";
 
 interface StockItem {
   id: string;
@@ -49,10 +45,18 @@ export default function StockTable({
   const [editItemId, setEditItemId] = useState<string | null>(null);
   const [editItemData, setEditItemData] = useState<Partial<StockItem>>({});
   const { mutate: updateStockItem } = useUpdateStockItem();
-  const { mutate: deleteStockItem } = useDeleteStockItem();
   const [moveDialogOpen, setMoveDialogOpen] = useState(false);
   const [selectedStockItem, setSelectedStockItem] = useState("");
   const showAlert = useAlert();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleOpenMoveDialog = (stockItem: string) => {
     setSelectedStockItem(stockItem);
@@ -94,31 +98,42 @@ export default function StockTable({
     <div className="overflow-auto">
       <div className="shadow-md rounded-lg relative overflow-x-auto">
         {data.stock_items.length > 0 ? (
-          <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>No</TableHead>
-                  <TableHead>Date Amended</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Item Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Serial No</TableHead>
-                  <TableHead>Lead Time</TableHead>
-                  <TableHead>Notes</TableHead>
-                  <TableHead className="text-right">Min Threshold</TableHead>
-                  <TableHead className="text-right">Count</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+          <TableContainer
+            sx={{ maxHeight: 600 }}
+            className="sticky mb-4 mt-4 max-h-40"
+          >
+            <Table stickyHeader>
+              <TableHead className="bg-gray-100 dark:bg-gray-800">
+                <TableRow className="bg-gray-100 dark:bg-gray-800">
+                  <TableCell>No</TableCell>
+                  <TableCell>Date Amended</TableCell>
+                  <TableCell>Priority</TableCell>
+                  <TableCell>Item Name</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Serial No</TableCell>
+                  <TableCell>Lead Time</TableCell>
+                  <TableCell>Notes</TableCell>
+                  <TableCell className="text-right">Min Threshold</TableCell>
+                  <TableCell className="text-right">Count</TableCell>
+                  <TableCell className="text-right">Actions</TableCell>
                 </TableRow>
-              </TableHeader>
+              </TableHead>
               <TableBody>
                 {data.stock_items.map((item: any, idx: any) => (
                   <TableRow key={item.id}>
-                    <TableCell className="font-medium">{idx + 1}</TableCell>
-                    <TableCell className="font-medium">
-                      {item.updated_at}
-                    </TableCell>
-                    <TableCell className="font-medium">
+                    <CustomTableCell className="">{idx + 1}</CustomTableCell>
+                    <CustomTableCell>
+                      {/* {item.updated_at} */}
+                      {new Date(item.updated_at).toLocaleString("en-CA", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      })}
+                    </CustomTableCell>
+                    <CustomTableCell>
                       {editItemId === item.id ? (
                         <Input
                           value={editItemData.priority || ""}
@@ -129,8 +144,8 @@ export default function StockTable({
                       ) : (
                         item.priority
                       )}
-                    </TableCell>
-                    <TableCell className="font-medium">
+                    </CustomTableCell>
+                    <CustomTableCell>
                       {editItemId === item.id ? (
                         <Textarea
                           value={editItemData.item_name || ""}
@@ -141,8 +156,8 @@ export default function StockTable({
                       ) : (
                         item.item_name
                       )}
-                    </TableCell>
-                    <TableCell className="font-medium">
+                    </CustomTableCell>
+                    <CustomTableCell>
                       {editItemId === item.id ? (
                         <Textarea
                           value={editItemData.description || ""}
@@ -153,8 +168,8 @@ export default function StockTable({
                       ) : (
                         item.description
                       )}
-                    </TableCell>
-                    <TableCell>
+                    </CustomTableCell>
+                    <CustomTableCell>
                       {editItemId === item.id ? (
                         <Input
                           value={editItemData.serial_no || ""}
@@ -165,8 +180,8 @@ export default function StockTable({
                       ) : (
                         item.serial_no
                       )}
-                    </TableCell>
-                    <TableCell>
+                    </CustomTableCell>
+                    <CustomTableCell>
                       {editItemId === item.id ? (
                         <Input
                           value={editItemData.lead_time || ""}
@@ -177,8 +192,8 @@ export default function StockTable({
                       ) : (
                         item.lead_time
                       )}
-                    </TableCell>
-                    <TableCell>
+                    </CustomTableCell>
+                    <CustomTableCell>
                       {editItemId === item.id ? (
                         <Textarea
                           value={editItemData.notes || ""}
@@ -189,8 +204,8 @@ export default function StockTable({
                       ) : (
                         item.notes
                       )}
-                    </TableCell>
-                    <TableCell className="text-right">
+                    </CustomTableCell>
+                    <CustomTableCell className="text-right">
                       {editItemId === item.id ? (
                         <Input
                           type="number"
@@ -204,8 +219,8 @@ export default function StockTable({
                       ) : (
                         item.threshold
                       )}
-                    </TableCell>
-                    <TableCell className="text-right">
+                    </CustomTableCell>
+                    <CustomTableCell className="text-right">
                       {editItemId === item.id ? (
                         <Input
                           type="number"
@@ -230,53 +245,41 @@ export default function StockTable({
                           )}
                         </div>
                       )}
-                    </TableCell>
-                    <TableCell className="flex items-center justify-end">
+                    </CustomTableCell>
+                    <CustomTableCell className="flex items-center justify-end">
                       {editItemId === item.id ? (
-                        <>
+                        <div className="w-16 flex items-center justify-end space-x-1">
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant="ghost"
                             onClick={handleSaveEdit}
                           >
                             <FaSave />
                           </Button>
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant="ghost"
                             onClick={() => setEditItemId(null)}
                           >
                             <GiCancel />
                           </Button>
-                        </>
+                        </div>
                       ) : (
-                        <>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleStartEdit(item)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleOpenMoveDialog(item.id)}
-                          >
-                            <MdOutlineDriveFileMove className="h-4 w-4" />
-                          </Button>
-                          <RemoveStockItem item={item} />
-                        </>
+                        <RowMenu
+                          item={item}
+                          sections={sections}
+                          handleStartEdit={handleStartEdit}
+                        />
                       )}
-                    </TableCell>
+                    </CustomTableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </>
+          </TableContainer>
         ) : (
-          <div className="justify-center text-center p-8 dark:text-black">
-            <h4>No data found</h4>
+          <div className="justify-center text-center p-8">
+            <h4>No stock added yet</h4>
           </div>
         )}
       </div>
@@ -289,5 +292,27 @@ export default function StockTable({
         />
       )}
     </div>
+  );
+}
+
+
+export function CustomTableCell({ className, children, ...props }: any) {
+  return (
+    <TableCell
+      {...props}
+      className={cn(
+        "p-1 align-middle [&:has([role=checkbox])]:pr-0 text-xs text-black dark:text-white",
+        className
+      )}
+      sx={{
+        padding: undefined,
+        fontSize: undefined,
+        fontWeight: undefined,
+        color: undefined,
+        backgroundColor: undefined,
+      }}
+    >
+      {children}
+    </TableCell>
   );
 }

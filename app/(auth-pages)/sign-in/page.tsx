@@ -17,7 +17,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
 
   return (
-    <div className="flex min-h-screen flex-col justify-center dark:bg-gray-800">
+    <div className="flex min-h-screen flex-col justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-3xl font-bold text-primary">Seatrench</h1>

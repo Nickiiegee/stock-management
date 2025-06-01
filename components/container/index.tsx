@@ -1,15 +1,7 @@
 "use client";
-import { useQueryClient } from "@tanstack/react-query";
 import SectionsData from "./sections-data";
-import { useEffect } from "react";
 
 export default function Container() {
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    queryClient.resetQueries({ queryKey: ["containerSections"]})
-  }, []);
-
   return <SectionsData />;
 }
 

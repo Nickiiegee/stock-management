@@ -32,8 +32,8 @@ const ModalContent = ({ sectionId, open, onClose }: BulkUpdateModalProps) => {
       },
       onError: (err) => {
         console.error(err);
-        // showAlert("Failed to add new stock. Please try again.", "error");
-        showAlert(`${err?.message}`, "error");
+        showAlert("Failed to add new stock. Please try again.", "error");
+        // showAlert(`${err?.message}`, "error");
       },
     });
   };
@@ -291,9 +291,9 @@ export default function AddStockModal({ sectionId }: { sectionId: string }) {
 
   return (
     <div>
-      <Button variant="outline" onClick={() => setIsPopupVisible(true)}>
+      <Button variant="ghost" onClick={() => setIsPopupVisible(true)}>
         <IoMdAdd />
-        Add Stock
+        {/* Add Stock */}
       </Button>
       {isPopupVisible && (
         <ModalContent

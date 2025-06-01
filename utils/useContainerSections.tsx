@@ -8,7 +8,7 @@ export function useFetchContainers() {
   return useQuery({
     queryKey: ["containers"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("containers").select("*");
+      const { data, error } = await supabase.from("containers").select("id, name, container, description");
       // .eq("id", id)
       // .single();
       if (error) throw error;
@@ -18,7 +18,6 @@ export function useFetchContainers() {
 }
 
 export function useContainerSections(containerId: string) {
-  const supabase = createClient();
   return useQuery({
     queryKey: ["containerSections", containerId],
     queryFn: async () => {
@@ -28,12 +27,10 @@ export function useContainerSections(containerId: string) {
       );
 
       if (error) throw new Error(error.message);
-      console.log("data:", data);
       return data;
     },
-    enabled: !!containerId, // Only run if containerId is available
-    staleTime: 0, // Cache for 5 minutes
-    // keepPreviousData: false,
+    enabled: !!containerId,
+    staleTime: 0,
   });
 }
 
@@ -75,6 +72,25 @@ export const useAddSection = (containerId: string) => {
   });
 };
 
+export const useUpdateSection = (containerId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ sectionId, sectionName }: { sectionId: string; sectionName: string }) => {
+      const { data, error } = await supabase
+        .from("sections")
+        .update({ name: sectionName })
+        .eq("id", sectionId)
+        .select();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["containerSections", containerId] });
+    },
+  });
+};
+
 export const useRemoveSection = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -101,7 +117,7 @@ export const useAddStockItems = () => {
         data: { user },
       } = await supabase.auth.getUser();
 
-      const date = new Date().toLocaleString();
+      const date = new Date().toISOString();
 
       for (const item of items) {
         const { error } = await supabase
@@ -121,7 +137,7 @@ export const useAddStockItems = () => {
 
 export const useUpdateStockItem = () => {
   const queryClient = useQueryClient();
-  const date = new Date().toLocaleString();
+  const date = new Date().toISOString();
   return useMutation({
     mutationFn: async ({ id, ...values }: { id: string; [k: string]: any }) => {
       const { data, error } = await supabase

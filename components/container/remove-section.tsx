@@ -1,6 +1,6 @@
-import { getUserRole } from "@/app/actions";
 import { useRemoveSection } from "@/utils/useContainerSections";
-import React, { useEffect, useState } from "react";
+import { useFetchUserRole } from "@/utils/useFetchUserRole";
+import React, { useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import { useAlert } from "../snackbar";
 import { Button } from "../ui/button";
@@ -39,19 +39,9 @@ const RemoveSectionPopup: React.FC<{
 
 const RemoveSection = ({ sectionId }: { sectionId: string }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [role, setRole] = useState("");
   const { mutate: removeSection, isPending } = useRemoveSection();
+  const { data: role } = useFetchUserRole(); // Assuming you have a hook to fetch user role
   const showAlert = useAlert();
-
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      const role = await getUserRole();
-      if (role === "admin") {
-        setRole("admin");
-      }
-    };
-    fetchUserRole();
-  }, []);
 
   const handleRemoveSection = () => {
     removeSection(sectionId, {

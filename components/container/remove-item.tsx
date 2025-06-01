@@ -1,10 +1,6 @@
-import { useDeleteStockItem } from "@/utils/useContainerSections";
-import React, { useState } from "react";
-import { FiTrash } from "react-icons/fi";
-import { Button } from "../ui/button";
-import { useAlert } from "../snackbar";
+import React from "react";
 
-const RemoveItemPopup: React.FC<{
+export const RemoveItemPopup: React.FC<{
   onConfirm: () => void;
   onCancel: () => void;
   isPending: boolean;
@@ -36,48 +32,3 @@ const RemoveItemPopup: React.FC<{
     </div>
   );
 };
-
-const RemoveStockItem = ({ item }: { item: any }) => {
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const { mutate: deleteStockItem, isPending } = useDeleteStockItem();
-  const showAlert = useAlert();
-
-  const handleDelete = () => {
-    deleteStockItem(item.id, {
-        onSuccess: () => {
-          showAlert("Removed item successfully.", "success");
-          handleCancel();
-        },
-        onError: (err) => {
-          console.error(err);
-          showAlert("Failed to remove item. Please try again.", "error");
-        },
-      });
-    setIsPopupVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsPopupVisible(false);
-  };
-
-  return (
-    <div>
-      <Button
-        variant="ghost"
-        onClick={() => setIsPopupVisible(true)}
-        className="px-2 py-2 rounded hover:text-red-700"
-      >
-        <FiTrash />
-      </Button>
-      {isPopupVisible && (
-        <RemoveItemPopup
-          onConfirm={handleDelete}
-          onCancel={handleCancel}
-          isPending={isPending}
-        />
-      )}
-    </div>
-  );
-};
-
-export default RemoveStockItem;
