@@ -91,6 +91,25 @@ export const useUpdateSection = (containerId: string) => {
   });
 };
 
+export const useUpdateSectionOrder = (containerId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ sectionId, sectionOrderNumber }: { sectionId: string; sectionOrderNumber: number }) => {
+      const { data, error } = await supabase
+        .from("sections")
+        .update({ order_number: sectionOrderNumber })
+        .eq("id", sectionId)
+        .select();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["containerSections", containerId] });
+    },
+  });
+};
+
 export const useRemoveSection = () => {
   const queryClient = useQueryClient();
   return useMutation({

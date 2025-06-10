@@ -1,18 +1,19 @@
 import {
   useContainerSections,
   useUpdateSection,
+  useUpdateSectionOrder,
 } from "@/utils/useContainerSections";
+import DragHandleIcon from "@mui/icons-material/DragHandle";
+import { Pencil } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useAlert } from "../snackbar";
 import { Button } from "../ui/button";
 import AddSection from "./add-section";
 import AddStockModal from "./add-stock";
 import StockTable from "./items-table";
 import RemoveSection from "./remove-section";
-import { Pencil } from "lucide-react";
-import { TextField } from "@mui/material";
-import { useAlert } from "../snackbar";
 
 export default function SectionsData() {
   const [editSectionId, setEditSectionId] = useState("");
@@ -32,7 +33,27 @@ export default function SectionsData() {
   else id = splittedPathname;
   // @ts-ignore
   const { mutate: updateSectionName } = useUpdateSection(id);
-  const { data, error, isLoading } = useContainerSections(id);
+  // @ts-ignore
+  const { mutate: updateSectionOrder } = useUpdateSectionOrder(id);
+  const { data, error, isLoading } = useContainerSections(id); // Collapse all sections by default when data loads
+
+  useEffect(() => {
+    if (data?.sections) {
+      setCollapsedSections((prev) => {
+        const newState: Record<string, boolean> = {};
+        data.sections.forEach((section: any) => {
+          newState[section.section_id] = prev[section.section_id] ?? true; // Default to collapsed
+        });
+        return newState;
+      });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.sections) {
+      data.sections.sort((a: any, b: any) => a.order_number - b.order_number);
+    }
+  }, [data]);
 
   const handleSectionNameUpdate = async (
     sectionId: string,
@@ -53,10 +74,30 @@ export default function SectionsData() {
         },
       }
     );
-    // After updating, you might want to refetch the data or update the state
     setEditSectionId("");
     setSectionName("");
     setIsSaving(false);
+  };
+
+  const handleMoveSection = (currentIndex: number, newIndex: number) => {
+    if (newIndex < 0 || newIndex >= data.sections.length) return;
+
+    const updatedSections = [...data.sections];
+    const [movedSection] = updatedSections.splice(currentIndex, 1);
+    updatedSections.splice(newIndex, 0, movedSection);
+
+    updateSectionOrder(
+      { sectionId: movedSection.section_id, sectionOrderNumber: newIndex },
+      {
+        onSuccess: () => {
+          showAlert("Moved section successfully.", "success");
+        },
+        onError: (err: any) => {
+          console.error(err);
+          showAlert("Failed to move section. Please try again.", "error");
+        },
+      }
+    );
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -80,9 +121,36 @@ export default function SectionsData() {
           <div>No sections or stock found for this container yet.</div>
         ) : (
           <>
-            {data.sections.map((section: any) => (
+            {data.sections.map((section: any, index: number) => (
               <div key={section.section_id}>
                 <div className="flex justify-start items-center">
+                  <div
+                    className="flex flex-col mr-2 cursor-grab"
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData("sectionIndex", index.toString());
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.add("bg-gray-100");
+                    }}
+                    onDragLeave={(e) => {
+                      e.currentTarget.classList.remove("bg-gray-100");
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove("bg-gray-100");
+                      const fromIndex = Number(
+                        e.dataTransfer.getData("sectionIndex")
+                      );
+                      if (fromIndex !== index) {
+                        handleMoveSection(fromIndex, index);
+                      }
+                    }}
+                    title="Drag to reorder section"
+                  >
+                    <DragHandleIcon />
+                  </div>
                   <Button
                     variant="ghost"
                     size="icon"

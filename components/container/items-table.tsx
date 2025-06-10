@@ -19,7 +19,6 @@ import { FaSave } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
 import { useAlert } from "../snackbar";
 import { Textarea } from "../ui/textarea";
-import { MoveStockDialog } from "./move-stock-dialog";
 import RowMenu from "./row-menu";
 
 interface StockItem {
@@ -45,23 +44,7 @@ export default function StockTable({
   const [editItemId, setEditItemId] = useState<string | null>(null);
   const [editItemData, setEditItemData] = useState<Partial<StockItem>>({});
   const { mutate: updateStockItem } = useUpdateStockItem();
-  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
-  const [selectedStockItem, setSelectedStockItem] = useState("");
   const showAlert = useAlert();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleOpenMoveDialog = (stockItem: string) => {
-    setSelectedStockItem(stockItem);
-    setMoveDialogOpen(true);
-  };
 
   const isLowStock = (quantity: number, threshold: number) =>
     quantity <= threshold;
@@ -224,14 +207,20 @@ export default function StockTable({
                       {editItemId === item.id ? (
                         <Input
                           type="number"
-                          value={editItemData.stock_on_hand}
+                          value={
+                            editItemData.stock_on_hand === undefined ||
+                            editItemData.stock_on_hand === null
+                              ? ""
+                              : editItemData.stock_on_hand
+                          }
                           min="0"
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const val = e.target.value;
                             handleChange(
                               "stock_on_hand",
-                              Number(e.target.value)
-                            )
-                          }
+                              val === "" ? "" : Number(val)
+                            );
+                          }}
                           className="w-24 ml-auto"
                         />
                       ) : (
@@ -283,18 +272,9 @@ export default function StockTable({
           </div>
         )}
       </div>
-      {moveDialogOpen && (
-        <MoveStockDialog
-          open={moveDialogOpen}
-          onClose={() => setMoveDialogOpen(false)}
-          stockItem={selectedStockItem}
-          sections={sections}
-        />
-      )}
     </div>
   );
 }
-
 
 export function CustomTableCell({ className, children, ...props }: any) {
   return (
