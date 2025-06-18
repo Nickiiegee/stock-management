@@ -3,6 +3,7 @@ import {
   useUpdateSection,
   useUpdateSectionOrder,
 } from "@/utils/useContainerSections";
+import { useFetchUserRole } from "@/utils/useFetchUserRole";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import { Pencil } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -33,6 +34,7 @@ export default function SectionsData() {
   else id = splittedPathname;
   // @ts-ignore
   const { mutate: updateSectionName } = useUpdateSection(id);
+  const { data: role } = useFetchUserRole();
   // @ts-ignore
   const { mutate: updateSectionOrder } = useUpdateSectionOrder(id);
   const { data, error, isLoading } = useContainerSections(id); // Collapse all sections by default when data loads
@@ -219,6 +221,7 @@ export default function SectionsData() {
                     <Button
                       variant="ghost"
                       onClick={() => setEditSectionId(section.section_id)}
+                      disabled={role !== "admin"}
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>

@@ -1,13 +1,12 @@
 "use client";
 import { useFetchUserRole } from "@/utils/useFetchUserRole";
-import { useUpdateUserProfile, useUserProfiles } from "@/utils/useUserProfiles";
+import { useUserProfiles } from "@/utils/useUserProfiles";
 import AddUserModal from "./addUser";
 import UsersTable from "./table";
 import UserTotals from "./userTotals";
 
 const UsersPage = () => {
   const { data: users = [], isLoading } = useUserProfiles();
-  const updateUserProfile = useUpdateUserProfile();
   const { data: role } = useFetchUserRole();
 
   if (isLoading) {

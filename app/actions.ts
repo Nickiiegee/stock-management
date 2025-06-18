@@ -4,6 +4,12 @@ import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { createClient as createServerClient } from '@supabase/supabase-js'
+
+const supabaseAdmin = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export const signInAction = async (formData: FormData) => {
   const email = formData.get("email") as string;
@@ -112,3 +118,23 @@ export const isUserSignedIn = async () => {
   }
   return true;
 };
+
+export const inviteUserAction = async (newUser: any) => {
+  if (!newUser.email) return { error: "Email is required" };
+
+  const { data: user, error } = await supabaseAdmin.auth.admin.createUser({
+    email: newUser.email,
+    email_confirm: true, // Send invitation email
+    password: newUser.tempPassword
+  });
+
+  if (error) throw error;
+
+  return { ...newUser, id: user.user.id}
+};
+
+export const deleteUserAction = async (userId: string) => {
+  const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+  if (error) throw error
+}

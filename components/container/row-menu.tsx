@@ -8,6 +8,7 @@ import { MdOutlineDriveFileMove } from "react-icons/md";
 import { useAlert } from "../snackbar";
 import { MoveStockDialog } from "./move-stock-dialog";
 import { RemoveItemPopup } from "./remove-item";
+import { useFetchUserRole } from "@/utils/useFetchUserRole";
 
 interface StockItem {
   id: string;
@@ -28,6 +29,7 @@ const RowMenu = ({ item, sections, handleStartEdit }: any) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const { data: role } = useFetchUserRole();
   const { mutate: deleteStockItem, isPending } = useDeleteStockItem();
   const showAlert = useAlert();
 
@@ -76,6 +78,7 @@ const RowMenu = ({ item, sections, handleStartEdit }: any) => {
             handleClose();
             handleStartEdit(item);
           }}
+          disabled={role !== 'admin'}
         >
           <Pencil className="h-4 w-4 mr-2" />
           Edit
@@ -85,6 +88,7 @@ const RowMenu = ({ item, sections, handleStartEdit }: any) => {
             handleClose();
             handleOpenMoveDialog(item.id);
           }}
+          disabled={role !== 'admin'}
         >
           <MdOutlineDriveFileMove className="h-4 w-4 mr-2" />
           Move
@@ -94,6 +98,7 @@ const RowMenu = ({ item, sections, handleStartEdit }: any) => {
             handleClose();
             setIsPopupVisible(true);
           }}
+          disabled={role !== 'admin'}
         >
           <FiTrash className="h-4 w-4 mr-2" /> Remove
         </MenuItem>

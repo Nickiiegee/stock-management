@@ -1,4 +1,5 @@
 import { useAddStockItems } from "@/utils/useContainerSections";
+import { useFetchUserRole } from "@/utils/useFetchUserRole";
 import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { useAlert } from "../snackbar";
@@ -284,6 +285,7 @@ const ModalContent = ({ sectionId, open, onClose }: BulkUpdateModalProps) => {
 
 export default function AddStockModal({ sectionId }: { sectionId: string }) {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const { data: role } = useFetchUserRole();
 
   const handleCancel = () => {
     setIsPopupVisible(false);
@@ -291,7 +293,11 @@ export default function AddStockModal({ sectionId }: { sectionId: string }) {
 
   return (
     <div>
-      <Button variant="ghost" onClick={() => setIsPopupVisible(true)}>
+      <Button
+        variant="ghost"
+        onClick={() => setIsPopupVisible(true)}
+        disabled={role !== "admin"}
+      >
         <IoMdAdd />
         {/* Add Stock */}
       </Button>

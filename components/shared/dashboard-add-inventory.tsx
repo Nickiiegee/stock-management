@@ -1,8 +1,9 @@
+import { useAddContainer } from "@/utils/useContainerSections";
+import { useFetchUserRole } from "@/utils/useFetchUserRole";
 import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
-import { Button } from "../ui/button";
 import { useAlert } from "../snackbar";
-import { useAddContainer } from "@/utils/useContainerSections";
+import { Button } from "../ui/button";
 
 const AddContainerPopup: React.FC<{
   onConfirm: () => void;
@@ -11,10 +12,17 @@ const AddContainerPopup: React.FC<{
   container: string;
   isPending: boolean;
   containerType: string;
-}> = ({ onConfirm, onCancel, container, setContainer, isPending, containerType }) => {
+}> = ({
+  onConfirm,
+  onCancel,
+  container,
+  setContainer,
+  isPending,
+  containerType,
+}) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+      <div className="bg-white dark:bg-blackrounded-lg shadow-lg p-6 w-96">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           Add {containerType}
         </h2>
@@ -44,6 +52,7 @@ const AddContainer = ({ containerType }: { containerType: string }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [container, setContainer] = useState("");
   const { mutate: addContainer, isPending } = useAddContainer(containerType);
+  const { data: role } = useFetchUserRole();
   const showAlert = useAlert();
 
   const handleAddContainer = () => {
@@ -57,7 +66,7 @@ const AddContainer = ({ containerType }: { containerType: string }) => {
         showAlert("Failed to add new container. Please try again.", "error");
       },
     });
-    setContainer("")
+    setContainer("");
     setIsPopupVisible(false);
   };
 
@@ -67,7 +76,10 @@ const AddContainer = ({ containerType }: { containerType: string }) => {
 
   return (
     <div>
-      <Button onClick={() => setIsPopupVisible(true)}>
+      <Button
+        onClick={() => setIsPopupVisible(true)}
+        disabled={role !== "admin"}
+      >
         <span className="hidden sm:block">Add {containerType}</span>
         <IoMdAdd className="block sm:hidden" />
       </Button>

@@ -9,8 +9,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search } from "lucide-react";
+import { Pencil, Search } from "lucide-react";
 import { useState } from "react";
+import { FaSave } from "react-icons/fa";
+import { FiTrash } from "react-icons/fi";
+import { GiCancel } from "react-icons/gi";
+import { useAlert } from "../snackbar";
+import { useDeleteUserProfile, useUpdateUserProfile } from "@/utils/useUserProfiles";
+import { RemoveUserPopup } from "./remove-user";
+import { deleteUserAction } from "@/app/actions";
 
 interface UserProfile {
   id: string;
@@ -22,8 +29,20 @@ interface UserProfile {
   last_active: string;
 }
 
-export default function UsersTable({ users, role }: { users: UserProfile[], role: string }) {
+export default function UsersTable({
+  users,
+  role,
+}: {
+  users: UserProfile[];
+  role: string;
+}) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [editUserId, setEditUserId] = useState<string | null>(null);
+  const [editUserData, setEditUserData] = useState<Partial<UserProfile>>({});
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const { mutate: updateUserProfile } = useUpdateUserProfile();
+  const { mutate: deleteUserProfile, isPending } = useDeleteUserProfile();
+  const showAlert = useAlert();
 
   const filteredUsers = users.filter(
     (user: UserProfile) =>
@@ -31,6 +50,56 @@ export default function UsersTable({ users, role }: { users: UserProfile[], role
       user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.role?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleStartEdit = (user: UserProfile) => {
+    setEditUserId(user.id);
+    setEditUserData(user);
+  };
+
+  const handleChange = (field: keyof UserProfile, value: any) => {
+    setEditUserData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveEdit = () => {
+    if (editUserId && editUserData) {
+      updateUserProfile(
+        { id: editUserId, ...editUserData },
+        {
+          onSuccess: () => {
+            showAlert("Updated stock successfully.", "success");
+          },
+          onError: (err: any) => {
+            console.error(err);
+            showAlert("Failed to update stock. Please try again.", "error");
+          },
+        }
+      );
+      setEditUserId(null);
+      setEditUserData({});
+    }
+  };
+
+  const handleDelete = async () => {
+    if (editUserId) {
+      deleteUserProfile(editUserId, {
+        onSuccess: () => {
+          showAlert("Removed user successfully.", "success");
+          handleCancel();
+          setIsPopupVisible(false);
+        },
+        onError: (err) => {
+          console.error(err);
+          showAlert("Failed to user item. Please try again.", "error");
+        },
+      });
+      await deleteUserAction(editUserId)
+    }
+  };
+
+  const handleCancel = () => {
+    setIsPopupVisible(false);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -62,14 +131,36 @@ export default function UsersTable({ users, role }: { users: UserProfile[], role
           <TableBody>
             {filteredUsers.map((user: UserProfile) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.full_name}</TableCell>
+                <TableCell className="font-medium">
+                  {editUserId === user.id ? (
+                    <Input
+                      value={editUserData.full_name || ""}
+                      onChange={(e) =>
+                        handleChange("full_name", e.target.value)
+                      }
+                    />
+                  ) : (
+                    user.full_name
+                  )}
+                </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
-                  <Badge
-                    variant={user.role === "Admin" ? "default" : "secondary"}
-                  >
-                    {user.role}
-                  </Badge>
+                  {editUserId === user.id ? (
+                    <select
+                      className="border rounded px-2 py-1 bg-white dark:bg-background"
+                      value={editUserData.role || ""}
+                      onChange={(e) => handleChange("role", e.target.value)}
+                    >
+                      <option value="user">user</option>
+                      <option value="admin">admin</option>
+                    </select>
+                  ) : (
+                    <Badge
+                      variant={user.role === "admin" ? "default" : "secondary"}
+                    >
+                      {user.role}
+                    </Badge>
+                  )}
                 </TableCell>
                 {/* <TableCell>
                   <Badge
@@ -86,15 +177,60 @@ export default function UsersTable({ users, role }: { users: UserProfile[], role
                 </TableCell> */}
                 <TableCell>{user.last_active ?? "Never"}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" disabled={role !== "admin"}>
-                    Manage
-                  </Button>
+                  {editUserId === user.id ? (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleSaveEdit}
+                      >
+                        <FaSave />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setEditUserId(null)}
+                      >
+                        <GiCancel />
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={role !== "admin"}
+                        onClick={() => {
+                          handleStartEdit(user);
+                        }}
+                      >
+                        <Pencil className="h-4 w-4 mr-2" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        disabled={role !== "admin"}
+                        onClick={() => {
+                          setEditUserId(user.id)
+                          setIsPopupVisible(true);
+                        }}
+                      >
+                        <FiTrash className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+            {isPopupVisible && (
+              <RemoveUserPopup
+                onConfirm={handleDelete}
+                onCancel={handleCancel}
+                isPending={isPending}
+              />
+            )}
     </div>
   );
 }
